@@ -1,13 +1,24 @@
+# Устанавливаем библиотеку python-dotenv (если она не установлена)
+!pip install python-dotenv
+
+# Импортируем необходимые модули
 import os
 import requests
 from dotenv import load_dotenv
-from google.colab import drive
 
-# Подключаем Google Drive
-drive.mount('/content/drive')
+# Проверяем, выполняется ли скрипт в Google Colab
+try:
+    from google.colab import drive
+    IN_COLAB = True
+except ImportError:
+    IN_COLAB = False
 
-# Указываем путь к .env файлу на Google Drive
-env_path = '/content/drive/MyDrive/Colab/.env'  # Убедитесь, что путь правильный
+# Подключаем Google Drive (если в Colab)
+if IN_COLAB:
+    drive.mount('/content/drive')
+    env_path = '/content/drive/MyDrive/Colab/.env'  # Убедитесь, что путь правильный
+else:
+    env_path = '.env'  # Используем локальный .env файл
 
 # Загружаем переменные из .env файла
 load_dotenv(env_path)
