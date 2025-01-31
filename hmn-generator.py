@@ -1,10 +1,15 @@
-# Устанавливаем библиотеку python-dotenv (если она не установлена)
-!pip install python-dotenv
-
-# Импортируем необходимые модули
 import os
 import requests
+import subprocess
+import sys
 from dotenv import load_dotenv
+
+# Проверяем и устанавливаем python-dotenv при необходимости
+try:
+    import dotenv
+except ImportError:
+    subprocess.run([sys.executable, "-m", "pip", "install", "python-dotenv"])
+    import dotenv  # Повторный импорт после установки
 
 # Проверяем, выполняется ли скрипт в Google Colab
 try:
