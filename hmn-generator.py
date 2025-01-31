@@ -3,7 +3,7 @@ import requests
 url = 'https://hdmn.cloud/ru/demo/'
 
 # Ссылка на GIF-анимацию
-animated_checkmark_url = 'https://drive.google.com/file/d/1ydbK21IHcyr1WM4oqIYB5tPTds7ex1qn/view?usp=sharing'
+animated_checkmark_url = 'https://i.imgur.com/Uj3xPn5.gif'
 
 # Попытка получить страницу и проверить статус ответа
 try:
