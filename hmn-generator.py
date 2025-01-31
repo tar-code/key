@@ -3,12 +3,12 @@ import requests
 import subprocess
 import sys
 
-# ✅ Установка и импорт python-dotenv
+# ✅ Установка python-dotenv, если он не найден
 try:
     import dotenv
     from dotenv import load_dotenv
 except ImportError:
-    print("⚠️ Библиотека python-dotenv не найдена. Устанавливаю...")
+    print("⚠️ Устанавливаю python-dotenv...")
     subprocess.run([sys.executable, "-m", "pip", "install", "python-dotenv"])
     import dotenv
     from dotenv import load_dotenv
@@ -20,27 +20,35 @@ try:
 except ImportError:
     IN_COLAB = False
 
-# ✅ Подключаем Google Drive (если в Colab) с обработкой ошибок
+# ✅ Указываем путь к .env (если в Colab, пробуем Google Drive)
+env_path = None
+
 if IN_COLAB:
     try:
         drive.mount('/content/drive')
-        env_path = '/content/drive/MyDrive/Colab/.env'  # Путь к .env в Google Drive
+        env_path = '/content/drive/MyDrive/Colab/.env'  # 🟢 Проверь, что этот путь правильный!
+        if not os.path.exists(env_path):
+            raise FileNotFoundError("❌ Файл .env не найден в Google Drive!")
     except Exception as e:
-        print(f"❌ Ошибка при подключении Google Drive: {e}")
+        print(f"⚠️ Ошибка при монтировании Google Drive: {e}")
         env_path = None
-else:
-    env_path = '.env'  # Используем локальный .env файл
 
-# ✅ Загружаем переменные из .env, если путь корректен
-if env_path:
+# Если Google Drive не работает, просим ввести путь вручную
+if env_path is None:
+    env_path = input("Введите путь к вашему .env файлу (например, /content/.env): ")
+
+# ✅ Загружаем переменные из .env
+if os.path.exists(env_path):
     load_dotenv(env_path)
-    TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
-    if not TELEGRAM_BOT_TOKEN:
-        raise ValueError("❌ Переменная TELEGRAM_BOT_TOKEN не найдена в .env файле.")
 else:
-    raise ValueError("❌ Файл .env не найден. Проверьте путь.")
+    raise ValueError(f"❌ Файл .env не найден! Указанный путь: {env_path}")
 
-# ✅ ID канала (замени на свой реальный ID)
+# ✅ Проверяем, загружен ли TELEGRAM_BOT_TOKEN
+TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
+if not TELEGRAM_BOT_TOKEN:
+    raise ValueError("❌ Переменная TELEGRAM_BOT_TOKEN не найдена в .env файле!")
+
+# ✅ ID канала (замени на реальный)
 CHANNEL_ID = -1001234567890  
 
 # ✅ Получить user_id по username
@@ -72,12 +80,12 @@ def main():
     # Получаем user_id
     user_id = get_user_id(username)
     if not user_id:
-        print('❌\033[1;31mНе удалось получить ваш user_id. Проверьте username.\033[0m')
+        print('❌ Не удалось получить ваш user_id. Проверьте username.')
         return
 
     # Проверяем подписку
     if not check_subscription(user_id):
-        print('❌\033[1;31mВы не подписаны на канал.\033[0m')
+        print('❌ Вы не подписаны на канал.')
         return
 
     url = 'https://hdmn.cloud/ru/demo/'
@@ -87,20 +95,20 @@ def main():
 
         if response.status_code == 200:
             if 'Ваша электронная почта' in response.text:
-                email = input('Введите электронную почту для получения тестового периода: ')
-                response = requests.post('https://hdmn.cloud/ru/demo/success/', data={"demo_mail": f"{email}"})
+                email = input('Введите электронную почту для теста: ')
+                response = requests.post('https://hdmn.cloud/ru/demo/success/', data={"demo_mail": email})
 
                 if 'Ваш код выслан на почту' in response.text:
-                    print('✅\033[1;32mВаш код уже в пути!\033[0m Проверьте свой почтовый ящик.')
+                    print('✅ Ваш код уже в пути! Проверьте почтовый ящик.')
                 else:
-                    print('❌\033[1;31mУказанная почта не подходит для теста.\033[0m')
+                    print('❌ Почта не подходит для теста.')
             else:
-                print('⚠️\033[1;31mНа странице не найдено нужного текста.\033[0m')
+                print('⚠️ На странице не найден нужный текст. Проверьте доступность сайта.')
         else:
-            print(f"⚠️\033[1;31mОшибка при запросе к странице. Код ответа: {response.status_code}\033[0m")
+            print(f"⚠️ Ошибка при запросе к странице. Код ответа: {response.status_code}")
 
     except requests.RequestException as e:
-        print(f"\033[1;31mОшибка при запросе к сайту:\033[0m {e}")
+        print(f"❌ Ошибка при запросе к сайту: {e}")
 
 if __name__ == '__main__':
     main()
