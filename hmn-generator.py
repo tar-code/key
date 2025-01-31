@@ -2,8 +2,10 @@ import requests
 
 url = 'https://hdmn.cloud/ru/demo/'
 
-# Ссылка на GIF-анимацию
+# Ссылки на GIF-анимации
 animated_checkmark_url = 'https://i.imgur.com/Uj3xPn5.gif'
+animated_cross_url = 'https://i.imgur.com/a7p5Nyb.gif'
+animated_warning_url = 'https://i.imgur.com/a7p5Nyb.gif'
 
 # Попытка получить страницу и проверить статус ответа
 try:
@@ -23,11 +25,15 @@ try:
                 # Вывод сообщения с GIF-анимацией вместо обычного символа
                 print(f'\033[1;32m<img src="{animated_checkmark_url}" alt="Animated Checkmark"> Ваш код уже в пути!\033[0m Проверьте свой почтовый ящик.')
             else:
-                print('❌ \033[1;31mУказанная почта не подходит для получения тестового периода.\033[0m')
+                # Замена ❌ на GIF-анимацию
+                print(f'\033[1;31m<img src="{animated_cross_url}" alt="Animated Cross"> Указанная почта не подходит для получения тестового периода.\033[0m')
         else:
-            print('⚠️ \033[1;31mНа странице не найдено нужного текста. Проверьте доступность страницы.\033[0m')
+            # Замена ⚠️ на GIF-анимацию
+            print(f'\033[1;31m<img src="{animated_warning_url}" alt="Animated Warning"> На странице не найдено нужного текста. Проверьте доступность страницы.\033[0m')
     else:
-        print(f"⚠️ \033[1;31mОшибка при запросе к странице.\033[0m Код ответа: {response.status_code}")
+        # Замена ⚠️ на GIF-анимацию
+        print(f'\033[1;31m<img src="{animated_warning_url}" alt="Animated Warning"> Ошибка при запросе к странице.\033[0m Код ответа: {response.status_code}')
         
 except requests.RequestException as e:
-    print(f"\033[1;31mОшибка при запросе к сайту:\033[0m {e}")
+    # Замена ⚠️ на GIF-анимацию
+    print(f"\033[1;31m<img src=\"{animated_warning_url}\" alt=\"Animated Warning\"> Ошибка при запросе к сайту:\033[0m {e}")
