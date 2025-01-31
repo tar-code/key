@@ -1,5 +1,5 @@
 import requests
-from IPython.display import HTML
+from IPython.display import HTML, display
 
 url = 'https://hdmn.cloud/ru/demo/'
 
