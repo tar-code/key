@@ -2,6 +2,9 @@ import requests
 
 url = 'https://hdmn.cloud/ru/demo/'
 
+# Ссылка на GIF-анимацию
+animated_checkmark_url = 'https://drive.google.com/file/d/1ydbK21IHcyr1WM4oqIYB5tPTds7ex1qn/view?usp=sharing'
+
 # Попытка получить страницу и проверить статус ответа
 try:
     response = requests.get(url)
@@ -17,7 +20,8 @@ try:
             })
 
             if 'Ваш код выслан на почту' in response.text:
-                print('✅ \033[1;32mВаш код уже в пути!\033[0m Проверьте свой почтовый ящик.')
+                # Вывод сообщения с GIF-анимацией вместо обычного символа
+                print(f'\033[1;32m<img src="{animated_checkmark_url}" alt="Animated Checkmark"> Ваш код уже в пути!\033[0m Проверьте свой почтовый ящик.')
             else:
                 print('❌ \033[1;31mУказанная почта не подходит для получения тестового периода.\033[0m')
         else:
