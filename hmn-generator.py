@@ -1,5 +1,37 @@
 import requests
 
+def handle_success(response):
+    """Обработка успешного ответа."""
+    success_message = """
+    ✅ Ваш код уже в пути! Проверьте свой почтовый ящик.
+    Подробнее об использовании кода: https://example.com/instructions
+    """
+    print(success_message)
+
+def handle_error(error_type, error_message=None):
+    """Обработка ошибок."""
+    if error_type == "invalid_email":
+        error_message = """
+        ⚠️ Указанная почта не подходит для получения тестового периода.
+        Инструкция по вводу корректной почты: https://example.com/email-instruction
+        """
+    elif error_type == "page_not_found":
+        error_message = """
+        ⚠️ На странице не найдено нужного текста.
+        Проверьте доступность страницы: https://hdmn.cloud/ru/demo/
+        """
+    elif error_type == "request_error":
+        error_message = f"""
+        ❌ Ошибка при запросе к странице. Код ответа: {error_message}
+        Инструкции по устранению проблемы: https://example.com/error-instructions
+        """
+    elif error_type == "site_request_error":
+        error_message = f"""
+        ❌ Ошибка при запросе к сайту: {error_message}
+        Проверьте подключение к интернету или попробуйте позже.
+        """
+    print(f"\033[1;31m{error_message}\033[0m")
+
 url = 'https://hdmn.cloud/ru/demo/'
 
 # Попытка получить страницу и проверить статус ответа
@@ -17,13 +49,13 @@ try:
             })
 
             if 'Ваш код выслан на почту' in response.text:
-                print('✅ \033[1;32mВаш код уже в пути!\033[0m Проверьте свой почтовый ящик.')
+                handle_success(response)
             else:
-                print('⚠️ \033[1;31mУказанная почта не подходит для получения тестового периода.\033[0m<br>Подробнее о данной ошибке вы можете узнать на странице: https://zsay.ru/hidemy-name/#print')
+                handle_error("invalid_email")
         else:
-            print('⚠️ \033[1;31mНа странице не найдено нужного текста.\033[0m Проверьте доступность страницы.')
+            handle_error("page_not_found")
     else:
-        print(f"❌ \033[1;31mОшибка при запросе к странице.\033[0m Код ответа: {response.status_code}")
+        handle_error("request_error", response.status_code)
         
 except requests.RequestException as e:
-    print(f"❌ \033[1;31mОшибка при запросе к сайту:\033[0m {e}")
+    handle_error("site_request_error", e)
