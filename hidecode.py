@@ -8,7 +8,7 @@ try:
 
     if response.status_code == 200:
         if 'Ваша электронная почта' in response.text:
-            email = input('Введите электронную почту для получения тестового периода: ')
+            email = input('Введите электронную почту: ')
             
             try:
                 response = requests.post('https://hdmn.cloud/ru/demo/success/', data={"demo_mail": email})
