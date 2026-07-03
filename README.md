@@ -1,4 +1,4 @@
-**Вставьте эти строки в блокнот Colab!**
+**Вставьте эти строки в блокнот Colab!**<br>
 Подробная инструкция на странице: https://zsay.ru/hidemy-name
 
 <pre><code>from google.colab import userdata
