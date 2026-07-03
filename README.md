@@ -1,4 +1,4 @@
-**Вставьте эти строки на Colab**
+**Вставьте эти строки в блокнот Colab: https://colab.research.google.com**
 
 <pre><code>from google.colab import userdata
 secret = userdata.get('secretName')
